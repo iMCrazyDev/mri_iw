@@ -18,7 +18,7 @@ export function NiivuePanel (props) {
         height: '90'
       }}  
     >
-      <canvas ref={canvas} height={480} width={640} />
+      <canvas ref={canvas} style={{paddingRight: 200}} height={480} width={640} />
 		</Box>
 	)
 }

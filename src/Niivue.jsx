@@ -17,8 +17,10 @@ import Layer from './components/Layer.jsx'
 import './Niivue.css'
 
 const nv = new Niivue({
-  loadingText: 'loading...'
+  loadingText: 'waiting for mri scan'
 })
+
+const mapFiles = {}
 
 // The NiiVue component wraps all other components in the UI. 
 // It is exported so that it can be used in other projects easily
@@ -63,11 +65,11 @@ export default function NiiVue(props) {
   // All subsequent imgaes should be added via a
   // button or drag and drop
   React.useEffect(()=>{
-    props.volumes.map(async (vol)=>{
+    /*props.volumes.map(async (vol)=>{
       let image = await NVImage.loadFromUrl({url:vol.url})
       nv.addVolume(image)
       setLayers([...nv.volumes])
-    })
+    })*/
   }, [])
 
   nv.opts.onImageLoaded = ()=>{
@@ -78,22 +80,42 @@ export default function NiiVue(props) {
     setLocationData(data.values)
   }
   // construct an array of <Layer> components. Each layer is a NVImage or NVMesh 
-  const layerList = layers.map((layer) => {
+  const layerList = layers.map((layer, index) => {
+    console.log(layer, index);
     return (
       <Layer 
         key={layer.name} 
         image={layer}
+        id={index}
+        opacity={layer.opacity}
         onColorMapChange={nvUpdateColorMap}
+        onHideLayer={() => {nvHideLayer(layer)}}
+        onShowLayer={() => {nvShowLayer(layer)}}
         onRemoveLayer={nvRemoveLayer}
+        onMagic={nvMagicLayer}
       />
     )
   })
 
+  async function addLayerURI(URI){
+    const nvimage = await NVImage.loadFromUrl({
+      url: URI,
+      colorMap: 'green',
+    })
+    nvimage.colorMapNegative = 'blue'
+    nv.addVolume(nvimage)
+    setLayers([...nv.volumes])
+  }
+
   async function addLayer(file){
     const nvimage = await NVImage.loadFromFile({
-      file: file
+      file: file,
+      colorMap: 'grey'
     })
+    nvimage.colorMapNegative = 'blue'
     nv.addVolume(nvimage)
+    mapFiles[nvimage.id] = file
+    console.log('volumes', nv.volumes);
     setLayers([...nv.volumes])
   }
 
@@ -305,6 +327,68 @@ export default function NiiVue(props) {
   function nvRemoveLayer(imageToRemove){
     nv.removeVolume(imageToRemove)
     setLayers([...nv.volumes])
+  }
+  
+  function nvHideLayer(layer) {
+    console.log('LAYER9', layer);
+
+    layer.opacity = 0;
+    //layer.visible = false;
+    //nv.setVolume(layer, -1)
+    //nv.setOpacity(0, 0);
+    //onsole.log('hide', nv.volumes);
+    setLayers([...nv.volumes])
+    nv.drawScene();
+    nv.updateGLVolume();
+
+  }
+
+  function nvShowLayer(layer){
+    //nv.setVolume(layer, index)
+    //console.log('show', nv.volumes);
+    console.log('LAYER8', layer);
+    //nv.setVolume(layer, 1)
+    layer.opacity = 1;
+
+    //layer.opacity = 1;//
+
+    //layer.visible = true;
+
+    setLayers([...nv.volumes])
+    nv.drawScene();
+    nv.updateGLVolume();  
+  }
+
+   async function nvMagicLayer(props) {
+    //console.log(imageToAnayze);
+    
+    const formData = new FormData();
+    formData.append('myFile', mapFiles[props.image.id]); // Добавляем файл в FormData
+
+    /*fetch('https://localhost:3000/post', {
+        method: 'POST',
+        body: formData // Отправляем FormData
+    })
+    .then(response => response.json()) // Обрабатываем ответ сервера
+    .then(data => {
+        console.log('Успех:', data);
+    })
+    .catch((error) => {
+        console.error('Ошибка:', error);
+    });*/
+    //console.log(props);
+    const nvimage = await NVImage.loadFromUrl({
+      url: 'http://localhost:3000/sub-00001_acq-T2sel_FLAIR_roi.nii',
+      colorMap: 'green',
+    })
+    nvimage.colorMapNegative = 'blue'
+    nv.addVolume(nvimage)
+    setLayers([...nv.volumes])
+    //props.onAddLayerURI(input.files[0])
+    //props.onMagic('https://github.com/niivue/niivue-ui/raw/demo/mni152.nii')
+
+    //nv.removeVolume(imageToRemove)
+    //setLayers([...nv.volumes])
   }
 
 	nv.on('intensityRange', (nvimage) => {
@@ -531,6 +615,7 @@ export default function NiiVue(props) {
         width={320}
         onToggleMenu={toggleLayers}
         onAddLayer={addLayer}
+        onAddLayerURI={addLayerURI}
       >
         {layerList} 
       </LayersPanel>

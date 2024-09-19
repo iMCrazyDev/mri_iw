@@ -4,6 +4,7 @@ import { Typography } from "@mui/material"
 import { IconButton } from "@mui/material"
 import { Button } from "@mui/material"
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+
 import GestureIcon from "@mui/icons-material/Gesture"
 import LayersIcon from "@mui/icons-material/Layers"
 import AddIcon from '@mui/icons-material/Add'
@@ -18,11 +19,23 @@ export function LayersPanel(props){
     input.click()
   }
 
+  function handleMagicLayer(){
+    let input = document.createElement('input')
+    input.type = 'file'
+    input.onchange = async function (){
+      props.onAddLayerURI(input.files[0])
+    }
+    input.click()
+  }
+
 	return (
 		<Drawer
       open={props.open}
-			variant="temporary"
-      anchor="left"
+			variant="permanent"
+      ModalProps={{
+        keepMounted: true,
+      }}
+      anchor="right"
       sx={{
         width: props.width,
       }}
@@ -57,11 +70,11 @@ export function LayersPanel(props){
               marginTop: '8px'
             }}
           >
-            <GestureIcon />
+            {/* <GestureIcon /> */}
           </IconButton>
         </Box>
         <Box sx={{
-          width:props.width,
+          width:props.width + 30,
           role: 'presentation',
           display: 'flex',
           height: '100%',
@@ -75,12 +88,12 @@ export function LayersPanel(props){
             sx={{
               display:'flex'
             }}>
-            <IconButton 
+            {/*<IconButton 
               onClick={props.onToggleMenu}
               style={{marginLeft:'auto'}}
             >
               <ArrowBackIcon />
-            </IconButton>
+            </IconButton>*/}
           </Box>
           <Box
             sx={{

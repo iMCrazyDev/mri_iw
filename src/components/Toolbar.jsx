@@ -32,11 +32,11 @@ export default function Toolbar(props){
       }}
     >
       
-      <IconButton 
+      {/*<IconButton 
         onClick={props.toggleLayers}
       >
         <MenuIcon />
-      </IconButton>
+      </IconButton>*/}
   
       <FormControl 
         size='small'
