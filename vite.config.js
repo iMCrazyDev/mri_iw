@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   root: '.',
-  base: './',
+  base: '/mri_iw/',
 	server: {
   	fs: {
       // Allow serving files from one level up to the project root
