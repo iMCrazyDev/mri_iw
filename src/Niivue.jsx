@@ -100,7 +100,7 @@ export default function NiiVue(props) {
   async function addLayerURI(URI){
     const nvimage = await NVImage.loadFromUrl({
       url: URI,
-      colorMap: 'green',
+      colorMap: 'hot',
     })
     nvimage.colorMapNegative = 'blue'
     nv.addVolume(nvimage)
@@ -110,7 +110,7 @@ export default function NiiVue(props) {
   async function addLayer(file){
     const nvimage = await NVImage.loadFromFile({
       file: file,
-      colorMap: 'grey'
+      colorMap: 'blue'
     })
     nvimage.colorMapNegative = 'blue'
     nv.addVolume(nvimage)
@@ -378,8 +378,8 @@ export default function NiiVue(props) {
     });*/
     //console.log(props);
     const nvimage = await NVImage.loadFromUrl({
-      url: 'http://localhost:3000/sub-00001_acq-T2sel_FLAIR_roi.nii',
-      colorMap: 'green',
+      url: 'http://109.229.156.242:1238/files/sub-00001_acq-T2sel_FLAIR_roi.nii',
+      colorMap: 'hot',
     })
     nvimage.colorMapNegative = 'blue'
     nv.addVolume(nvimage)
