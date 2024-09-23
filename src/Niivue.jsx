@@ -363,8 +363,8 @@ export default function NiiVue(props) {
     //console.log(imageToAnayze);
     
     const formData = new FormData();
-    formData.append('myFile', mapFiles[props.image.id][0]); // Добавляем файл в FormData
-    formData.append('myFile', mapFiles[props.image.id][1]); // Добавляем файл в FormData
+    formData.append('files', mapFiles[props.image.id][0]); // Добавляем файл в FormData
+    formData.append('files', mapFiles[props.image.id][1]); // Добавляем файл в FormData
 
     fetch('http://127.0.0.1:1239/upload_files', {
         method: 'POST',
