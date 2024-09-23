@@ -7,6 +7,8 @@ export default defineConfig({
   root: '.',
   base: '/mri_iw/',
 	server: {
+    host: '0.0.0.0',
+    https: false,
   	fs: {
       // Allow serving files from one level up to the project root
     	allow: ['..']

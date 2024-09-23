@@ -13,10 +13,14 @@ export function LayersPanel(props){
   function handleAddLayer(){
     let input = document.createElement('input')
     input.type = 'file'
+    input.multiple = 'multiple'
     input.onchange = async function (){
       props.onAddLayer(input.files[0])
     }
     input.click()
+    if (input.files.length > 1) {
+      mapFiles[nvimage.id].push(input.files[1])
+    }
   }
 
   function handleMagicLayer(){

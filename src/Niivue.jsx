@@ -17,7 +17,7 @@ import Layer from './components/Layer.jsx'
 import './Niivue.css'
 
 const nv = new Niivue({
-  loadingText: 'waiting for mri scan'
+  loadingText: ''
 })
 
 const mapFiles = {}
@@ -114,7 +114,7 @@ export default function NiiVue(props) {
     })
     nvimage.colorMapNegative = 'blue'
     nv.addVolume(nvimage)
-    mapFiles[nvimage.id] = file
+    mapFiles[nvimage.id] = [file]
     console.log('volumes', nv.volumes);
     setLayers([...nv.volumes])
   }
@@ -365,25 +365,27 @@ export default function NiiVue(props) {
     const formData = new FormData();
     formData.append('myFile', mapFiles[props.image.id]); // Добавляем файл в FormData
 
-    /*fetch('https://localhost:3000/post', {
+    /*fetch('http://127.0.0.1:1239/post', {
         method: 'POST',
-        body: formData // Отправляем FormData
+        body: formData, // Отправляем FormData
+        signal: AbortSignal.timeout(5000)
     })
     .then(response => response.json()) // Обрабатываем ответ сервера
     .then(data => {
         console.log('Успех:', data);
+        const nvimage = await NVImage.loadFromUrl({
+          url: 'http://localhost:1239/files/sub-00001_acq-T2sel_FLAIR_roi.nii',
+          colorMap: 'hot',
+        })
+        nvimage.colorMapNegative = 'blue'
+        nv.addVolume(nvimage)
+        setLayers([...nv.volumes])
     })
     .catch((error) => {
         console.error('Ошибка:', error);
     });*/
     //console.log(props);
-    const nvimage = await NVImage.loadFromUrl({
-      url: 'http://109.229.156.242:1238/files/sub-00001_acq-T2sel_FLAIR_roi.nii',
-      colorMap: 'hot',
-    })
-    nvimage.colorMapNegative = 'blue'
-    nv.addVolume(nvimage)
-    setLayers([...nv.volumes])
+    
     //props.onAddLayerURI(input.files[0])
     //props.onMagic('https://github.com/niivue/niivue-ui/raw/demo/mni152.nii')
 
