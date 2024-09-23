@@ -20,7 +20,7 @@ const nv = new Niivue({
   loadingText: ''
 })
 
-const mapFiles = {}
+export const mapFiles = {}
 
 // The NiiVue component wraps all other components in the UI. 
 // It is exported so that it can be used in other projects easily
@@ -107,14 +107,14 @@ export default function NiiVue(props) {
     setLayers([...nv.volumes])
   }
 
-  async function addLayer(file){
+  async function addLayer(files){
     const nvimage = await NVImage.loadFromFile({
-      file: file,
+      file: files[0],
       colorMap: 'blue'
     })
     nvimage.colorMapNegative = 'blue'
     nv.addVolume(nvimage)
-    mapFiles[nvimage.id] = [file]
+    mapFiles[nvimage.id] = files
     console.log('volumes', nv.volumes);
     setLayers([...nv.volumes])
   }

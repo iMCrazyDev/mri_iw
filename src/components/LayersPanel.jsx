@@ -8,6 +8,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import GestureIcon from "@mui/icons-material/Gesture"
 import LayersIcon from "@mui/icons-material/Layers"
 import AddIcon from '@mui/icons-material/Add'
+import mapFiles from '../Niivue'
 
 export function LayersPanel(props){
   function handleAddLayer(){
@@ -15,12 +16,9 @@ export function LayersPanel(props){
     input.type = 'file'
     input.multiple = 'multiple'
     input.onchange = async function (){
-      props.onAddLayer(input.files[0])
+      props.onAddLayer(input.files)
     }
     input.click()
-    if (input.files.length > 1) {
-      mapFiles[nvimage.id].push(input.files[1])
-    }
   }
 
   function handleMagicLayer(){
