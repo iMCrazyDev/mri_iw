@@ -363,27 +363,46 @@ export default function NiiVue(props) {
     //console.log(imageToAnayze);
     
     const formData = new FormData();
-    formData.append('myFile', mapFiles[props.image.id]); // Добавляем файл в FormData
+    formData.append('myFile', mapFiles[props.image.id][0]); // Добавляем файл в FormData
+    formData.append('myFile', mapFiles[props.image.id][1]); // Добавляем файл в FormData
 
-    /*fetch('http://127.0.0.1:1239/post', {
+    fetch('http://127.0.0.1:1239/upload_files', {
         method: 'POST',
         body: formData, // Отправляем FormData
-        signal: AbortSignal.timeout(5000)
+        signal: AbortSignal.timeout(10 * 1000 * 60)
     })
-    .then(response => response.json()) // Обрабатываем ответ сервера
-    .then(data => {
-        console.log('Успех:', data);
-        const nvimage = await NVImage.loadFromUrl({
-          url: 'http://localhost:1239/files/sub-00001_acq-T2sel_FLAIR_roi.nii',
+    .then(response => response.blob()) // Обрабатываем ответ сервера
+    .then(async blob => {
+      const base64String = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result.split(',')[1]);
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+      });
+      const nvimage = await NVImage.loadFromBase64({
+          base64: base64String,
           colorMap: 'hot',
-        })
-        nvimage.colorMapNegative = 'blue'
-        nv.addVolume(nvimage)
-        setLayers([...nv.volumes])
+      });
+      nvimage.colorMapNegative = 'blue'
+      nv.addVolume(nvimage)
+      setLayers([...nv.volumes])
+        /*if (data.status == 'found') {
+          console.log('Успех:', data);
+          NVImage.load
+          const nvimage = await NVImage.loadFromUrl({
+            url: data.url,
+            colorMap: 'hot',
+          })
+          nvimage.colorMapNegative = 'blue'
+          nv.addVolume(nvimage)
+          setLayers([...nv.volumes])
+        } else {
+
+        }*/
     })
     .catch((error) => {
         console.error('Ошибка:', error);
-    });*/
+    });
     //console.log(props);
     
     //props.onAddLayerURI(input.files[0])
