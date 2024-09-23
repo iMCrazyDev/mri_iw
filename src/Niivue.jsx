@@ -371,16 +371,16 @@ export default function NiiVue(props) {
         body: formData, // Отправляем FormData
         signal: AbortSignal.timeout(10 * 1000 * 60)
     })
-    .then(response => response.blob()) // Обрабатываем ответ сервера
-    .then(async blob => {
-      const base64String = await new Promise((resolve, reject) => {
+    .then(response => response.json()) // Обрабатываем ответ сервера
+    .then(async data => {
+      /*const base64String = await new Promise((resolve, reject) => {
           const reader = new FileReader();
           reader.onloadend = () => resolve(reader.result.split(',')[1]);
           reader.onerror = reject;
           reader.readAsDataURL(blob);
-      });
-      const nvimage = await NVImage.loadFromBase64({
-          base64: base64String,
+      });*/
+      const nvimage = await NVImage.loadFromUrl({
+          url: data.url,
           colorMap: 'hot',
       });
       nvimage.colorMapNegative = 'blue'
