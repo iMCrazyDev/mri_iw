@@ -15,6 +15,7 @@ import NVSwitch from './components/Switch.jsx'
 import LocationTable from './components/LocationTable.jsx'
 import Layer from './components/Layer.jsx'
 import './Niivue.css'
+import { Oval } from 'react-loader-spinner';
 
 const nv = new Niivue({
   loadingText: ''
@@ -57,6 +58,7 @@ export default function NiiVue(props) {
   const [rulerColor, setRulerColor] = React.useState(nv.opts.rulerColor)
   const [rulerOpacity, setRulerOpacity] = React.useState(nv.opts.rulerColor[3])
   const [highDPI, setHighDPI] = React.useState(false)
+  const [isLoading, setIsLoading] = React.useState(false);
 
   // only run this when the component is mounted on the page
   // or else it will be recursive and continuously add all
@@ -93,6 +95,7 @@ export default function NiiVue(props) {
         onShowLayer={() => {nvShowLayer(layer)}}
         onRemoveLayer={nvRemoveLayer}
         onMagic={nvMagicLayer}
+        loader={setIsLoading}
       />
     )
   })
@@ -110,7 +113,7 @@ export default function NiiVue(props) {
   async function addLayer(files){
     const nvimage = await NVImage.loadFromFile({
       file: files[0],
-      colorMap: 'blue'
+      colorMap: 'gray'
     })
     nvimage.colorMapNegative = 'blue'
     nv.addVolume(nvimage)
@@ -361,7 +364,8 @@ export default function NiiVue(props) {
 
    async function nvMagicLayer(props) {
     //console.log(imageToAnayze);
-    
+    props.loader(true);
+
     const formData = new FormData();
     formData.append('files', mapFiles[props.image.id][0]); // Добавляем файл в FormData
     formData.append('files', mapFiles[props.image.id][1]); // Добавляем файл в FormData
@@ -381,7 +385,7 @@ export default function NiiVue(props) {
       });*/
       const nvimage = await NVImage.loadFromUrl({
           url: data.url,
-          colorMap: 'hot',
+          colorMap: 'blue2red',
       });
       nvimage.colorMapNegative = 'blue'
       nv.addVolume(nvimage)
@@ -403,6 +407,8 @@ export default function NiiVue(props) {
     .catch((error) => {
         console.error('Ошибка:', error);
     });
+    props.loader(false);
+
     //console.log(props);
     
     //props.onAddLayerURI(input.files[0])
@@ -423,7 +429,34 @@ export default function NiiVue(props) {
       height: '100vh',
       backgroundColor: 'black'
       }}
-    >	
+    >
+      {isLoading && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 9999
+        }}>
+          <Oval
+            height={80}
+            width={80}
+            color="#0f9ed5"
+            wrapperStyle={{}}
+            wrapperClass=""
+            visible={true}
+            ariaLabel='oval-loading'
+            secondaryColor="#0e688c"
+            strokeWidth={2}
+            strokeWidthSecondary={2}
+          />
+        </div>
+      )}
       <SettingsPanel 
         open={openSettings}
         width={300}
