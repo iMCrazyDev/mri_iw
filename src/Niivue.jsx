@@ -365,6 +365,7 @@ export default function NiiVue(props) {
    async function nvMagicLayer(props) {
     //console.log(imageToAnayze);
     props.loader(true);
+    //await new Promise(resolve => setTimeout(resolve, 2000));
 
     const formData = new FormData();
     formData.append('files', mapFiles[props.image.id][0]); // Добавляем файл в FormData
@@ -406,8 +407,9 @@ export default function NiiVue(props) {
     })
     .catch((error) => {
         console.error('Ошибка:', error);
+    }).finally(() => {
+      props.loader(false);
     });
-    props.loader(false);
 
     //console.log(props);
     
